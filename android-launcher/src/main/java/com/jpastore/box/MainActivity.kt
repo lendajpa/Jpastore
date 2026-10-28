@@ -41,7 +41,7 @@ class MainActivity : Activity() {
     private fun shape(color: Int) = GradientDrawable().apply { setColor(color); cornerRadius = dp(10).toFloat(); setStroke(dp(1), Color.rgb(0,184,245)) }
     private fun home() {
         val root = LinearLayout(this).apply { orientation = LinearLayout.HORIZONTAL; setBackgroundColor(navy); setPadding(dp(16),dp(16),dp(16),dp(16)) }
-        val side = panel(); root.addView(side, LinearLayout.LayoutParams(dp(245),-1))
+        val side = panel(); val sideScroll = ScrollView(this); sideScroll.addView(side); root.addView(sideScroll, LinearLayout.LayoutParams(dp(245),-1))
         side.addView(label("JPA STORE",26f).apply { setTextColor(Color.rgb(255,138,0)); setTypeface(null,Typeface.BOLD) })
         val scroll = ScrollView(this); content = panel(); scroll.addView(content); root.addView(scroll,LinearLayout.LayoutParams(0,-1,1f)); setContentView(root)
         val first = button("▶  ASSISTIR TV",side) { watch() }
@@ -80,9 +80,9 @@ class MainActivity : Activity() {
         }; if(list.childCount == 0) list.addView(label("Nenhum aplicativo disponível.")) }
         search.addTextChangedListener(object: TextWatcher { override fun beforeTextChanged(s: CharSequence?,st:Int,c:Int,a:Int) {} ; override fun onTextChanged(s:CharSequence?,st:Int,b:Int,c:Int) { render(s.toString()) }; override fun afterTextChanged(e: Editable?) {} }); render("")
     }
-    private fun authorize(action: () -> Unit) {
-        if(unlocked) { action(); return }; if(SystemClock.elapsedRealtime()<retryAt) { info("Aguarde","Tente novamente em 30 segundos."); return }
-        val creating = !prefs.contains("pin"); val input = EditText(this).apply { inputType = 18; hint = "6 a 12 números" }
+    private fun authorize(replace: Boolean = false, action: () -> Unit) {
+        if(unlocked && !replace) { action(); return }; if(SystemClock.elapsedRealtime()<retryAt) { info("Aguarde","Tente novamente em 30 segundos."); return }
+        val creating = replace || !prefs.contains("pin"); val input = EditText(this).apply { inputType = 18; hint = "6 a 12 números" }
         AlertDialog.Builder(this).setTitle(if(creating) "Criar PIN administrativo" else "PIN administrativo").setView(input).setNegativeButton("Cancelar",null).setPositiveButton("Continuar") { _,_ ->
             val pin = input.text.toString(); if(!PinSecurity.valid(pin)) { info("PIN inválido","Use de 6 a 12 números."); return@setPositiveButton }
             if(creating) {
@@ -104,7 +104,7 @@ class MainActivity : Activity() {
         button("Selecionar aplicativo principal de TV") { authorize { apps(true) } }
         button("Definir como launcher padrão") { if(Build.VERSION.SDK_INT>=29) { val role = getSystemService(RoleManager::class.java); if(role.isRoleAvailable(RoleManager.ROLE_HOME) && !role.isRoleHeld(RoleManager.ROLE_HOME)) launch(role.createRequestRoleIntent(RoleManager.ROLE_HOME)) else launch(Intent(Settings.ACTION_HOME_SETTINGS)) } else launch(Intent(Settings.ACTION_HOME_SETTINGS)) }
         button("Configurações oficiais do Android") { launch(Intent(Settings.ACTION_SETTINGS)) }
-        button("Alterar PIN") { authorize { prefs.edit().remove("pin").remove("salt").apply(); unlocked=false; authorize { admin() } } }
+        button("Alterar PIN") { authorize { authorize(replace = true) { admin() } } }
         button("Histórico local") { authorize { info("Operações",prefs.getString("history","Nenhuma operação.")!!) } }
         button("Bloquear painel") { unlocked=false; home() }
     }
