@@ -3,7 +3,7 @@ android {
     namespace = "com.jpastore.box"
     compileSdk = 35
     buildFeatures { buildConfig = true }
-    defaultConfig { applicationId = "com.jpastore.box"; minSdk = 23; targetSdk = 35; versionCode = 1; versionName = "0.1.0" }
+    defaultConfig { applicationId = "com.jpastore.box"; minSdk = 23; targetSdk = 35; versionCode = 2; versionName = "0.2.0" }
     signingConfigs {
         create("cloudRelease") {
             val keyPath = System.getenv("JPA_KEYSTORE_PATH")

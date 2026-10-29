@@ -1,5 +1,7 @@
 # JPA BOX OS EXTREME — JPA Store
 
+Versão 0.2.0: ícones reais fornecidos pelos aplicativos instalados, grade de três colunas, atalhos na tela inicial e destaque com ícone do app principal de TV. As imagens são locais e não exigem downloads ou novas permissões. Quando um app não está mais instalado, o cartão usa o ícone padrão do Android.
+
 Primeira versão Android TV nativa em Kotlin, Android 6/API 23 ou superior. Interface horizontal, menu ASSISTIR TV, seleção persistente do aplicativo principal, busca de apps com atividade de abertura, informações de versão, solicitação de desinstalação pelo sistema, painel técnico com PIN criado no primeiro acesso, armazenamento/RAM, histórico local e limpeza do cache próprio.
 
 O PIN possui salt aleatório e PBKDF2 (120 mil iterações); não existe PIN padrão. O painel bloqueia ao sair do aplicativo. A primeira configuração deve ser realizada pelo proprietário. O PIN protege configurações locais; não substitui bloqueio do sistema, administração de dispositivos nem proteção contra acesso físico/ADB. O histórico é local, limitado e não é uma trilha de auditoria inviolável.
